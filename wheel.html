@@ -42,8 +42,8 @@ h1 {
 
 .wheel-wrapper {
   position: relative;
-  width: 260px;
-  height: 260px;
+  width: 340px;
+  height: 340px;
   margin: 0 auto 20px;
 }
 
@@ -69,13 +69,15 @@ canvas {
 
 .center-dot {
   position: absolute;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: #ff5722;
   border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
 }
 
 button {
@@ -102,7 +104,7 @@ button:disabled {
 
   <div class="wheel-wrapper">
     <div class="pointer"></div>
-    <canvas id="wheel" width="260" height="260"></canvas>
+    <canvas id="wheel" width="340" height="340"></canvas>
     <div class="center-dot"></div>
   </div>
 
@@ -155,8 +157,8 @@ function drawWheel() {
     ctx.rotate(start + arc / 2);
     ctx.textAlign = "center";
     ctx.fillStyle = "#333";
-    ctx.font = "bold 11px Arial";
-    ctx.fillText(text, radius * 0.65, 8);
+    ctx.font = "bold 12px Arial";
+    ctx.fillText(text, radius * 0.7, 8);
     ctx.restore();
 
     start = end;
