@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin & Win</title>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #7f7fd5, #86a8e7, #91eae4);
+  font-family: Poppins, Arial, sans-serif;
+}
+
+.card {
+  width: 380px;
+  padding: 28px;
+  text-align: center;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  color: #fff;
+}
+
+h1 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 15px;
+}
+
+.wheel-wrapper {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 0 auto 20px;
+}
+
+canvas {
+  border-radius: 50%;
+  background: #fff;
+  border: 8px solid rgba(255,255,255,0.7);
+}
+
+.pointer {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 26px solid #ff5722; /* flipped */
+  z-index: 5;
+}
+
+
+.center-dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #ff5722;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+button {
+  background: #ff5722;
+  border: none;
+  padding: 14px 28px;
+  font-size: 15px;
+  border-radius: 30px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
+button:disabled {
+  opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>🎡 Spin & Win</h1>
+  <div class="subtitle">Pointer always lands on the offer</div>
+
+  <div class="wheel-wrapper">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="260" height="260"></canvas>
+    <div class="center-dot"></div>
+  </div>
+
+  <button id="spinBtn">SPIN NOW</button>
+</div>
+
+<script>
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const spinBtn = document.getElementById("spinBtn");
+
+const offers = [
+  "₹305 OFF on 900ml",
+  "₹60 OFF on 200ml",
+  "₹150 OFF",
+  "Free Halwa",
+  "Free Spoon of Ghee",
+  "200ml FREE with 900ml"
+];
+
+const colors = [
+  "#ffcc80","#80deea","#c5e1a5",
+  "#f8bbd0","#d1c4e9","#ffe082"
+];
+
+const radius = canvas.width / 2;
+const arc = (2 * Math.PI) / offers.length;
+
+let angle = 0;
+let spinning = false;
+
+/* DRAW WHEEL */
+function drawWheel() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let start = angle;
+
+  offers.forEach((text, i) => {
+    const end = start + arc;
+
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, start, end);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(start + arc / 2);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#333";
+    ctx.font = "bold 11px Arial";
+    ctx.fillText(text, radius * 0.65, 8);
+    ctx.restore();
+
+    start = end;
+  });
+}
+
+/* SPIN */
+spinBtn.onclick = () => {
+  if (spinning) return;
+  spinning = true;
+  spinBtn.disabled = true;
+
+  let speed = Math.random() * 25 + 30;
+  const friction = 0.985;
+
+  const spin = setInterval(() => {
+    angle += speed * Math.PI / 180;
+    speed *= friction;
+
+    if (speed < 0.3) {
+      clearInterval(spin);
+      spinning = false;
+      spinBtn.disabled = false;
+      showResult();
+    }
+
+    drawWheel();
+  }, 16);
+};
+
+/* RESULT – POINTER IS AT TOP */
+function showResult() {
+  const normalized =
+    (2 * Math.PI - (angle % (2 * Math.PI)) - Math.PI / 2 + 2 * Math.PI)
+    % (2 * Math.PI);
+
+  const index = Math.floor(normalized / arc);
+
+  Swal.fire({
+    title: "🎉 Congratulations!",
+    text: offers[index],
+    icon: "success",
+    confirmButtonText: "OK"
+  });
+}
+
+drawWheel();
+</script>
+
+</body>
+</html>
