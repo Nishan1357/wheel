@@ -62,12 +62,11 @@ canvas {
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-top: 26px solid #ff5722; /* flipped */
+  border-top: 26px solid #ff5722;
   z-index: 5;
 }
 
-
-.center-dot {
+/* .center-dot {
   position: absolute;
   width: 20px;
   height: 20px;
@@ -77,8 +76,7 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  pointer-events: none;
-}
+} */
 
 button {
   background: #ff5722;
@@ -88,7 +86,6 @@ button {
   border-radius: 30px;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.3);
 }
 button:disabled {
   opacity: 0.6;
@@ -99,13 +96,13 @@ button:disabled {
 <body>
 
 <div class="card">
-  <h1>🎡 Spin & Win</h1>
-  <div class="subtitle">Pointer always lands on the offer</div>
+  <h1>FinTreasure</h1>
+  <div class="subtitle">Pointer always lands on the task</div>
 
   <div class="wheel-wrapper">
     <div class="pointer"></div>
     <canvas id="wheel" width="340" height="340"></canvas>
-    <div class="center-dot"></div>
+    <!-- <div class="center-dot"></div> -->
   </div>
 
   <button id="spinBtn">SPIN NOW</button>
@@ -116,18 +113,69 @@ const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
 const spinBtn = document.getElementById("spinBtn");
 
+/* ACTIVITIES */
 const offers = [
-  "₹305 OFF on 900ml",
-  "₹60 OFF on 200ml",
-  "₹150 OFF",
-  "Free Halwa",
-  "Free Spoon of Ghee",
-  "200ml FREE with 900ml"
+  "TASK 1","TASK 2","TASK 3","TASK 4","TASK 5",
+  "TASK 6","TASK 7","TASK 8","TASK 9","TASK 10"
 ];
 
+/* COLORS */
 const colors = [
-  "#ffcc80","#80deea","#c5e1a5",
-  "#f8bbd0","#d1c4e9","#ffe082"
+  "#ffcc80","#80deea","#c5e1a5","#f8bbd0","#d1c4e9",
+  "#ffe082","#b2dfdb","#ffab91","#ce93d8","#a5d6a7"
+];
+
+/* TASK DETAILS */
+const tasks = [
+`<b>The Scenario:</b><br>You are a team that has just reached a checkpoint.<br><br>
+<b>The Task:</b><br>Form a perfect straight line in ascending order of height.<br><br>
+<b>The Action:</b><br>• No talking allowed<br>• Hold position for 5 seconds<br><br>
+📸 <b>Proof:</b> Photo of the line.`,
+
+`<b>The Scenario:</b><br>You have 60 seconds to prove your coordination.<br><br>
+<b>The Task:</b><br>Form a circle and sit down together at the same time.<br><br>
+<b>The Action:</b><br>• One attempt only<br>• Everyone must sit simultaneously<br><br>
+📸 <b>Proof:</b> Short video.`,
+
+`<b>The Scenario:</b><br>Show teamwork without using words.<br><br>
+<b>The Task:</b><br>Spell a 4-letter word using hand signs.<br><br>
+<b>The Action:</b><br>• No talking<br>• All letters visible at once<br><br>
+📸 <b>Proof:</b> Photo.`,
+
+`<b>The Scenario:</b><br>Speed matters.<br><br>
+<b>The Task:</b><br>Line → Circle → Triangle<br><br>
+<b>The Action:</b><br>• Continuous movement<br>• No verbal instructions<br><br>
+📸 <b>Proof:</b> Video under 1 minute.`,
+
+`<b>The Scenario:</b><br>Act without speaking.<br><br>
+<b>The Task:</b><br>One member acts an emotion, others guess.<br><br>
+<b>The Action:</b><br>• No words<br>• Max 30 seconds<br><br>
+📸 <b>Proof:</b> Short video.`,
+
+`<b>The Scenario:</b><br>Physical coordination challenge.<br><br>
+<b>The Task:</b><br>Pass a small object without hands.<br><br>
+<b>The Action:</b><br>• First to last member<br>• Restart if dropped<br><br>
+📸 <b>Proof:</b> Video.`,
+
+`<b>The Scenario:</b><br>Creative checkpoint.<br><br>
+<b>The Task:</b><br>Freeze into a statue showing “College Life”.<br><br>
+<b>The Action:</b><br>• Freeze 5 seconds<br>• One pose only<br><br>
+📸 <b>Proof:</b> Photo.`,
+
+`<b>The Scenario:</b><br>Quick thinking required.<br><br>
+<b>The Task:</b><br>Arrange by shoe size or birth month.<br><br>
+<b>The Action:</b><br>• No phones<br>• No talking<br><br>
+📸 <b>Proof:</b> Photo.`,
+
+`<b>The Scenario:</b><br>Show unity.<br><br>
+<b>The Task:</b><br>All members jump together.<br><br>
+<b>The Action:</b><br>• One attempt<br>• Everyone in air<br><br>
+📸 <b>Proof:</b> Photo or video.`,
+
+`<b>The Scenario:</b><br>Final coordination check.<br><br>
+<b>The Task:</b><br>Create any recognizable shape.<br><br>
+<b>The Action:</b><br>• Hold 5 seconds<br><br>
+📸 <b>Proof:</b> Photo.`
 ];
 
 const radius = canvas.width / 2;
@@ -143,7 +191,6 @@ function drawWheel() {
 
   offers.forEach((text, i) => {
     const end = start + arc;
-
     ctx.beginPath();
     ctx.moveTo(radius, radius);
     ctx.arc(radius, radius, radius, start, end);
@@ -155,9 +202,9 @@ function drawWheel() {
     ctx.save();
     ctx.translate(radius, radius);
     ctx.rotate(start + arc / 2);
-    ctx.textAlign = "center";
     ctx.fillStyle = "#333";
-    ctx.font = "bold 12px Arial";
+    ctx.font = "bold 11px Arial";
+    ctx.textAlign = "center";
     ctx.fillText(text, radius * 0.7, 8);
     ctx.restore();
 
@@ -184,12 +231,11 @@ spinBtn.onclick = () => {
       spinBtn.disabled = false;
       showResult();
     }
-
     drawWheel();
   }, 16);
 };
 
-/* RESULT – POINTER IS AT TOP */
+/* RESULT */
 function showResult() {
   const normalized =
     (2 * Math.PI - (angle % (2 * Math.PI)) - Math.PI / 2 + 2 * Math.PI)
@@ -198,10 +244,10 @@ function showResult() {
   const index = Math.floor(normalized / arc);
 
   Swal.fire({
-    title: "🎉 Congratulations!",
-    text: offers[index],
-    icon: "success",
-    confirmButtonText: "OK"
+    title: offers[index],
+    html: tasks[index],
+    icon: "info",
+    confirmButtonText: "Got it!"
   });
 }
 
